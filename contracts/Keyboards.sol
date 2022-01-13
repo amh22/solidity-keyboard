@@ -19,6 +19,15 @@ struct Keyboard {
   address owner;
 }
 
+event KeyboardCreated(
+  Keyboard keyboard
+);
+
+event TipSent(
+  address recipient,
+  uint256 amount
+);
+
   Keyboard[] public createdKeyboards;
 
  // Function to return ALL the keyboards
@@ -39,13 +48,14 @@ struct Keyboard {
     });
 
     createdKeyboards.push(newKeyboard);
-    // emit KeyboardCreated(newKeyboard);
+    emit KeyboardCreated(newKeyboard);
   }
 
   //  Allow User to tip the owner of a given keyboard
   function tip(uint256 _index) external payable  {
     address payable owner = payable(createdKeyboards[_index].owner);
     owner.transfer(msg.value);
+    emit TipSent(owner, msg.value);
   }
 
 }
