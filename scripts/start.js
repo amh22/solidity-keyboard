@@ -1,22 +1,18 @@
 async function main() {
-  const [owner, somebodyElse] = await hre.ethers.getSigners()
   const keyboardsContractFactory = await hre.ethers.getContractFactory('Keyboards')
   const keyboardsContract = await keyboardsContractFactory.deploy()
   await keyboardsContract.deployed()
 
   console.log('Contract deployed to:', keyboardsContract.address)
 
-  const keyboardTxn1 = await keyboardsContract.create('A really super dooper keyboard!')
+  const keyboardTxn1 = await keyboardsContract.create(0, true, 'sepia')
   await keyboardTxn1.wait() // wait for it to be mined
 
-  const keyboardTx2 = await keyboardsContract.connect(somebodyElse).create('An even better keyboard!')
-  await keyboardTx2.wait() // wait for it to be mined
+  const keyboardTxn2 = await keyboardsContract.create(1, false, 'grayscale')
+  await keyboardTxn2.wait() // wait for it to be mined
 
   keyboards = await keyboardsContract.getKeyboards()
   console.log('We got the keyboards', keyboards)
-
-  keyboards = await keyboardsContract.connect(somebodyElse).getKeyboards()
-  console.log('And as somebody else!', keyboards)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
