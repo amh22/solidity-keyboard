@@ -3,6 +3,8 @@ import { ethers } from 'ethers'
 import abi from '../utils/Keyboards.json'
 import PrimaryButton from '../components/primary-button'
 import Keyboard from '../components/keyboard'
+import addressesEqual from '../utils/addressesEqual'
+import { UserCircleIcon } from '@heroicons/react/solid'
 
 export default function Home() {
   const [ethereum, setEthereum] = useState(undefined)
@@ -11,7 +13,7 @@ export default function Home() {
   const [newKeyboard, setNewKeyboard] = useState('')
   const [keyboardsLoading, setKeyboardsLoading] = useState(false)
 
-  const contractAddress = '0xcC7b0EFcA3C79e834898D0e7B738674b9366D4d2'
+  const contractAddress = '0x921053cE6bb08cA04Ac3ef9e29B2692A986df860'
   const contractABI = abi.abi
 
   const handleAccounts = (accounts) => {
@@ -34,8 +36,17 @@ export default function Home() {
       handleAccounts(accounts)
     }
   }
-
   useEffect(() => getConnectedAccount(), [])
+
+  const connectAccount = async () => {
+    if (!ethereum) {
+      alert('MetaMask is required to connect an account')
+      return
+    }
+
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' }) // Open MetaMask and ask User for permission to connect their wallet
+    handleAccounts(accounts)
+  }
 
   const getKeyboards = async () => {
     if (ethereum && connectedAccount) {
@@ -56,37 +67,6 @@ export default function Home() {
   }
   useEffect(() => getKeyboards(), [connectedAccount])
 
-  const connectAccount = async () => {
-    if (!ethereum) {
-      alert('MetaMask is required to connect an account')
-      return
-    }
-
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' }) // Open MetaMask and ask User for permission to connect their wallet
-    handleAccounts(accounts)
-  }
-
-  const submitCreate = async (e) => {
-    e.preventDefault()
-
-    if (!ethereum) {
-      console.error('Ethereum object is required to create a keyboard')
-      return
-    }
-
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const signer = provider.getSigner()
-    const keyboardsContract = new ethers.Contract(contractAddress, contractABI, signer)
-
-    const createTxn = await keyboardsContract.create(newKeyboard)
-    console.log('Create transaction started...', createTxn.hash)
-
-    await createTxn.wait()
-    console.log('Created keyboard!', createTxn.hash)
-
-    await getKeyboards()
-  }
-
   if (!ethereum) {
     return <p>Please install MetaMask to connect to this site</p>
   }
@@ -102,8 +82,17 @@ export default function Home() {
           Create a Keyboard!
         </PrimaryButton>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-2 p-2'>
-          {keyboards.map(([kind, isPBT, filter], i) => (
-            <Keyboard key={i} kind={kind} isPBT={isPBT} filter={filter} />
+          {keyboards.map(([kind, isPBT, filter, owner], i) => (
+            <div key={i} className='relative'>
+              <Keyboard kind={kind} isPBT={isPBT} filter={filter} />
+              <span className='absolute top-1 right-6'>
+                {addressesEqual(owner, connectedAccount) ? (
+                  <UserCircleIcon className='h-5 w-5 text-indigo-100' />
+                ) : (
+                  <button>Tip!</button>
+                )}
+              </span>
+            </div>
           ))}
         </div>
       </div>
@@ -128,34 +117,6 @@ export default function Home() {
         Create a Keyboard!
       </PrimaryButton>
       <p>No keyboards yet!</p>
-    </div>
-  )
-
-  return (
-    <div className='flex flex-col gap-y-8'>
-      <form className='flex flex-col gap-y-2'>
-        <div>
-          <label htmlFor='keyboard-description' className='block text-sm font-medium text-gray-700'>
-            Keyboard Description
-          </label>
-        </div>
-        <input
-          name='keyboard-type'
-          className='mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'
-          value={newKeyboard}
-          onChange={(e) => {
-            setNewKeyboard(e.target.value)
-          }}
-        />
-        <PrimaryButton type='submit' onClick={submitCreate}>
-          Create Keyboard!
-        </PrimaryButton>
-      </form>
-      <div>
-        {keyboards.map((keyboard, i) => (
-          <p key={i}>{keyboard}</p>
-        ))}
-      </div>
     </div>
   )
 }

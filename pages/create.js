@@ -14,7 +14,7 @@ export default function Create() {
   const [isPBT, setIsPBT] = useState(false)
   const [filter, setFilter] = useState('')
 
-  const contractAddress = '0xcC7b0EFcA3C79e834898D0e7B738674b9366D4d2'
+  const contractAddress = '0x921053cE6bb08cA04Ac3ef9e29B2692A986df860'
   const contractABI = abi.abi
 
   const handleAccounts = (accounts) => {
