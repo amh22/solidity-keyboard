@@ -9,12 +9,12 @@ async function main() {
   const keyboardTxn1 = await keyboardsContract.create(0, true, 'sepia')
   // await keyboardTxn1.wait()
   const keyboardTxn1Receipt = await keyboardTxn1.wait() // wait for it to be mined
-  console.log(keyboardTxn1Receipt.events)
+  console.log('Txn 1 Receipt', keyboardTxn1Receipt.events)
 
   const keyboardTxn2 = await keyboardsContract.connect(somebodyElse).create(1, false, 'grayscale')
   // await keyboardTxn2.wait() // wait for it to be mined
   const keyboardTxn2Receipt = await keyboardTxn2.wait() // wait for it to be mined
-  console.log(keyboardTxn2Receipt.events)
+  console.log('Txn 2 Receipt', keyboardTxn2Receipt.events)
 
   keyboards = await keyboardsContract.getKeyboards()
   console.log('We got the keyboards', keyboards)
@@ -30,7 +30,7 @@ async function main() {
 
   const tipTxn = await keyboardsContract.connect(somebodyElse).tip(0, { value: hre.ethers.utils.parseEther('1') })
   const tipTxnReceipt = await tipTxn.wait()
-  console.log(tipTxnReceipt.events)
+  console.log('Tip Sent', tipTxnReceipt.events)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
