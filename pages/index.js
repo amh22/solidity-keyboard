@@ -53,7 +53,7 @@ export default function Home() {
   useEffect(addContractEventHandlers, [!!keyboardsContract, connectedAccount])
 
   if (!ethereum) {
-    return <p>Please install MetaMask to connect to this site</p>
+    return <p>Please install MetaMask and select the Rinkeby Network to connect to this site.</p>
   }
 
   if (!connectedAccount) {
