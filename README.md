@@ -1,15 +1,18 @@
-# Basic Sample Hardhat Project
+# A Full-stack Ethereum App: Solidity & Next.js
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This simple project allows users to create custom keyboard NFTs on-chain (Rinkeby testnet), view other users' keyboards, and send an ETH tip to your favorites. The was built to further my learning of writing Solidity contracts and and integrating with a frontend. 
 
-Try running some of the following tasks:
+The deployed app can be found here:
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+<p>
+<a href="https://solidity-keyboard-five.vercel.app/">
+    Solidity Keyboard
+</a>
+</p>
+
+If you'd like to create your own, the tutorial can be found here: 
+
+<a href="https://www.pointer.gg/tutorials/solid-solidity/a7ec3eff-fc59-481d-bcb2-1224b3e9c0f7">
+    Pointer Tutorials: Solid Solidity
+</a>
+
